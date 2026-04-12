@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Profile - DoctorSetu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="create-profile.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+      <div class="brand">
+        <i class="fas fa-heartbeat"></i>
+        <h1>DoctorSetu</h1>
+        <p>Let's set up your health profile</p>
+      </div>
+      <div class="illustration">
+        <i class="fas fa-user-circle"></i>
+      </div>
+      <ul class="perks">
+        <li><i class="fas fa-check-circle"></i> Book appointments instantly</li>
+        <li><i class="fas fa-check-circle"></i> Get messages from your doctor</li>
+        <li><i class="fas fa-check-circle"></i> Track your health history</li>
+      </ul>
+    </div>
+
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
+      <div class="form-card">
+
+        <div class="form-top">
+          <button type="button" class="btn-back-login" onclick="goBack()">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <div class="step-badge"><i class="fas fa-user-plus"></i></div>
+          <h2>Create Your Profile</h2>
+          <p>Just a few details to get started</p>
+        </div>
+
+        <form id="profileForm">
+
+          <div class="field-group">
+            <label><i class="fas fa-user"></i> Name</label>
+            <input type="text" id="name" placeholder="Enter your full name" required>
+          </div>
+
+          <div class="field-row">
+            <div class="field-group">
+              <label><i class="fas fa-birthday-cake"></i> Age</label>
+              <input type="number" id="age" placeholder="Your age" min="1" max="120" required>
+            </div>
+            <div class="field-group">
+              <label><i class="fas fa-venus-mars"></i> Gender</label>
+              <div class="gender-options">
+                <label class="gender-btn">
+                  <input type="radio" name="gender" value="Male">
+                  <span><i class="fas fa-mars"></i> Male</span>
+                </label>
+                <label class="gender-btn">
+                  <input type="radio" name="gender" value="Female">
+                  <span><i class="fas fa-venus"></i> Female</span>
+                </label>
+                <label class="gender-btn">
+                  <input type="radio" name="gender" value="Other">
+                  <span><i class="fas fa-genderless"></i> Other</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label><i class="fas fa-envelope"></i> Email <span class="optional">(optional)</span></label>
+            <input type="email" id="email" placeholder="your@email.com">
+          </div>
+
+          <p id="errMsg" class="err-msg"></p>
+
+          <button type="submit" class="btn-create">
+            <i class="fas fa-arrow-right"></i> Create Profile & Continue
+          </button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+
+  <script src="create-profile.js"></script>
+</body>
+</html>

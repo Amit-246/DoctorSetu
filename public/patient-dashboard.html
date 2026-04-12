@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Dashboard - DoctorSetu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="patient-dashboard.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <i class="fas fa-heartbeat"></i>
+      <span>DoctorSetu</span>
+    </div>
+
+    <div class="active-profile" id="sidebarProfile" onclick="toggleSwitchProfile()" title="Click to switch profile">
+      <div class="ap-avatar" id="sidebarAvatar"><i class="fas fa-user"></i></div>
+      <div style="flex:1;">
+        <p class="ap-name" id="sidebarName">Loading...</p>
+        <span class="ap-tag" id="sidebarRelation">—</span>
+      </div>
+      <i class="fas fa-chevron-down ap-switch-icon" id="apSwitchIcon"></i>
+    </div>
+
+    <!-- Switch Profile Dropdown -->
+    <div id="switchProfilePanel" class="switch-profile-panel" style="display:none;">
+      <div id="switchProfileList"></div>
+    </div>
+
+    <nav class="nav-menu">
+      <a class="nav-item active" onclick="showSection('appointments')">
+        <i class="fas fa-calendar-check"></i><span>Appointments</span>
+      </a>
+      <a class="nav-item" onclick="showSection('messages')">
+        <i class="fas fa-comment-medical"></i><span>Medical Chat</span>
+      </a>
+      <a class="nav-item" onclick="showSection('prescriptions')">
+        <i class="fas fa-file-medical"></i><span>Prescriptions</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a class="nav-item logout" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- TOP BAR -->
+    <header class="top-bar">
+      <div class="top-left">
+        <h1 id="sectionTitle">Appointments</h1>
+        <p id="sectionSub">Track all your booking statuses</p>
+      </div>
+      <div class="top-right">
+        <button class="btn-book-header" onclick="openAddModal()">
+          <i class="fas fa-calendar-plus"></i>
+          <span>Book Appointment</span>
+        </button>
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
+            <i class="fas fa-bell"></i>
+            <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+          </button>
+          <div class="notif-panel" id="notifPanel">
+            <div class="notif-panel-header">
+              <span>Notifications</span>
+              <button class="notif-clear" onclick="clearNotifications()">Mark all read</button>
+            </div>
+            <div id="notifList" class="notif-list">
+              <p class="notif-empty"><i class="fas fa-bell-slash"></i><br>No notifications yet</p>
+            </div>
+          </div>
+        </div>
+        <div class="profile-menu-wrap">
+          <div class="top-avatar" id="topAvatar" onclick="toggleProfileMenu()"><i class="fas fa-user"></i></div>
+          <div class="profile-dropdown" id="profileDropdown">
+            <div class="pd-info">
+              <p id="pdName">—</p>
+              <span id="pdMobile">—</span>
+            </div>
+            <div class="pd-divider"></div>
+            <button class="pd-item" onclick="openEditProfileModal()">
+              <i class="fas fa-user-edit"></i> Edit Profile
+            </button>
+            <button class="pd-item logout" onclick="logout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ── APPOINTMENTS SECTION (default) ── -->
+    <section id="appointmentsSection" class="section">
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-calendar-check"></i> All Appointments</h2>
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-btn active" onclick="filterApts('all', this)">All</button>
+          <button class="filter-btn" onclick="filterApts('pending', this)">Pending</button>
+          <button class="filter-btn" onclick="filterApts('confirmed', this)">Confirmed</button>
+          <button class="filter-btn" onclick="filterApts('cancelled', this)">Cancelled</button>
+        </div>
+        <div id="fullAptList" class="apt-list"></div>
+      </div>
+    </section>
+
+    <!-- ── MESSAGES SECTION ── -->
+    <section id="messagesSection" class="section" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-comment-medical"></i> Medical Chat</h2>
+        </div>
+        <div id="messagesList" class="messages-list">
+          <p class="empty-state"><i class="fas fa-inbox"></i><br>No messages yet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ PRESCRIPTIONS SECTION ══ -->
+    <section id="prescriptionsSection" class="section" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <h2><i class="fas fa-file-medical"></i> Prescription Storage</h2>
+        </div>
+        <div class="rx-filter-tabs">
+          <button class="filter-btn active" onclick="filterRx('all', this)">All</button>
+          <button class="filter-btn" onclick="filterRx('report', this)">Reports</button>
+          <button class="filter-btn" onclick="filterRx('prescription', this)">Prescriptions</button>
+        </div>
+        <div id="rxList" class="rx-list"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ══ BOOKING WIZARD ══ -->
+<div id="addModal" class="modal">
+  <div class="wizard-box">
+
+    <!-- PROGRESS BAR -->
+    <div class="wizard-progress">
+      <div class="wp-step active" id="wp1"><div class="wp-circle">1</div><span>Basic Details</span></div>
+      <div class="wp-line"></div>
+      <div class="wp-step" id="wp2"><div class="wp-circle">2</div><span>Appointment</span></div>
+      <div class="wp-line"></div>
+      <div class="wp-step" id="wp3"><div class="wp-circle">3</div><span>Medical Info</span></div>
+      <div class="wp-line"></div>
+      <div class="wp-step" id="wp4"><div class="wp-circle">4</div><span>Select</span></div>
+      <span class="wizard-close" onclick="closeAddModal()">&times;</span>
+    </div>
+
+    <!-- STEP 1 — Basic Details -->
+    <div class="wizard-step" id="step1">
+      <div class="step-header">
+        <div class="step-icon"><i class="fas fa-user"></i></div>
+        <div><h3>Booking For</h3><p>Review and update patient details for this appointment</p></div>
+      </div>
+
+      <!-- Patient identity card (avatar + name) -->
+      <div class="s1-patient-card">
+        <div class="s1-patient-avatar" id="s1PatientAvatar"><i class="fas fa-user"></i></div>
+        <div class="s1-patient-info">
+          <h4 id="s1PatientName">—</h4>
+          <div class="s1-patient-meta" id="s1PatientMeta">—</div>
+        </div>
+      </div>
+
+      <!-- Editable fields -->
+      <div class="form-row" style="margin-top:14px;">
+        <div class="form-group">
+          <label>Name *</label>
+          <input type="text" id="s1_name" placeholder="Full name" required>
+        </div>
+        <div class="form-group">
+          <label>Age *</label>
+          <input type="number" id="s1_age" placeholder="Age" min="1" max="120" required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Gender *</label>
+          <select id="s1_gender" required>
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Relation</label>
+          <select id="s1_relation">
+            <option value="Self">Self</option>
+            <option value="Parent">Parent</option>
+            <option value="Child">Child</option>
+            <option value="Spouse">Spouse</option>
+            <option value="Sibling">Sibling</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Blood Group</label>
+          <select id="s1_bloodGroup">
+            <option value="">Select</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option>
+            <option>AB+</option><option>AB-</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Present Address *</label>
+        <textarea id="s1_address" rows="4" placeholder="Current residential address" required style="width:100%;resize:vertical;"></textarea>
+        <button type="button" class="btn-use-location" id="locationBtn" onclick="useCurrentLocation()" style="margin-top:8px;">
+          <i class="fas fa-location-crosshairs" id="locationIcon"></i>
+          <span id="locationBtnText">Use Current Location</span>
+        </button>
+      </div>
+
+      <p id="step1Err" class="step-err"></p>
+      <div class="wizard-actions"><span></span>
+        <button class="btn-next" onclick="goStep(2)">Next <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 2 — Appointment Type + Date/Time -->
+    <div class="wizard-step" id="step2" style="display:none;">
+      <div class="step-header">
+        <div class="step-icon purple"><i class="fas fa-calendar-check"></i></div>
+        <div><h3>Appointment Details</h3><p>Choose how you want to consult</p></div>
+      </div>
+
+      <div class="form-group">
+        <label>Appointment Type *</label>
+        <div class="apt-type-grid">
+          <div class="apt-type-card" data-type="online" onclick="selectAptType(this)">
+            <div class="atc-icon online"><i class="fas fa-video"></i></div>
+            <h4>Online</h4><p>Video / Chat</p>
+          </div>
+          <div class="apt-type-card" data-type="home_visit" onclick="selectAptType(this)">
+            <div class="atc-icon home"><i class="fas fa-house-medical"></i></div>
+            <h4>Home Visit</h4><p>At your home</p>
+          </div>
+          <div class="apt-type-card" data-type="offline" onclick="selectAptType(this)">
+            <div class="atc-icon offline"><i class="fas fa-hospital"></i></div>
+            <h4>Clinic</h4><p>Visit in person</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Home Visit sub-options -->
+      <div id="homeVisitOptions" style="display:none;">
+        <div class="form-group">
+          <label>Home Visit Type *</label>
+          <div class="hv-type-grid">
+            <div class="hv-card" data-hv="doctor" onclick="selectHomeVisitType(this)">
+              <div class="hv-card-icon doctor"><i class="fas fa-user-md"></i></div>
+              <div class="hv-card-body">
+                <h4>Doctor Home Visit</h4>
+                <p>Doctor comes to your home for emergency treatment</p>
+              </div>
+              <div class="hv-card-check"><i class="fas fa-check-circle"></i></div>
+            </div>
+            <div class="hv-card" data-hv="nurse" onclick="selectHomeVisitType(this)">
+              <div class="hv-card-icon nurse"><i class="fas fa-user-nurse"></i></div>
+              <div class="hv-card-body">
+                <h4>Nurse Home Visit</h4>
+                <p>Nurse for injections, IV drips &amp; basic care</p>
+              </div>
+              <div class="hv-card-check"><i class="fas fa-check-circle"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Date + Time (shown after apt type selected, hidden for nurse) -->
+      <div id="dateTimeFields" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Preferred Date *</label>
+            <input type="date" id="s2_date" min="">
+          </div>
+          <div class="form-group">
+            <label>Preferred Time *</label>
+            <div class="time-spinner" id="timeSpinner">
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeTime('hour',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val" id="tsHour">09</div>
+                <button type="button" class="ts-arrow" onclick="changeTime('hour',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+              <div class="ts-sep">:</div>
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeTime('min',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val" id="tsMin">00</div>
+                <button type="button" class="ts-arrow" onclick="changeTime('min',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+              <div class="ts-sep ts-sep-ampm"></div>
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeTime('ampm',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val ts-ampm" id="tsAmPm">AM</div>
+                <button type="button" class="ts-arrow" onclick="changeTime('ampm',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p id="step2Err" class="step-err"></p>
+      <div class="wizard-actions">
+        <button class="btn-back" onclick="goStep(1)"><i class="fas fa-arrow-left"></i> Back</button>
+        <button class="btn-next" id="step2NextBtn" onclick="handleStep2Next()">Next <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- STEP 3 — Medical Info (Online / Clinic / Doctor Home Visit shared) -->
+    <div class="wizard-step" id="step3" style="display:none;">
+      <div class="step-header">
+        <div class="step-icon green"><i class="fas fa-notes-medical"></i></div>
+        <div><h3>Medical Information</h3><p>Describe the health problem and upload reports</p></div>
+      </div>
+
+      <!-- Emergency banner shown only for Doctor Home Visit -->
+      <div id="hvEmergencyBanner" class="hv-emergency-banner" style="display:none;">
+        <i class="fas fa-ambulance"></i>
+        <div>
+          <strong>Emergency Home Visit</strong>
+          <span>Describe the situation clearly so the nearest doctor can be dispatched quickly.</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label id="s3_problemLabel">Health Problem / Reason for Visit *</label>
+        <textarea id="s3_healthProblem" rows="3" placeholder="Describe symptoms, pain, or reason for appointment..." required></textarea>
+      </div>
+      <div class="form-group" id="s3_treatmentGroup">
+        <label>Current Treatment (if any)</label>
+        <textarea id="s3_currentTreatment" rows="2" placeholder="Mention any ongoing treatment, clinic or hospital name..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Upload / Select Medical Prescription <span class="optional-tag">Optional</span></label>
+
+        <!-- Select from existing prescriptions -->
+        <div id="existingRxPanel" class="existing-rx-panel" style="display:none;">
+          <div class="existing-rx-header">
+            <i class="fas fa-folder-open"></i>
+            <span>Select from existing prescriptions</span>
+            <button type="button" class="btn-rx-toggle" onclick="toggleExistingRx()">Hide</button>
+          </div>
+          <div id="existingRxList" class="existing-rx-list"></div>
+        </div>
+
+        <div class="upload-tabs">
+          <button type="button" class="upload-tab active" id="tabUpload" onclick="switchUploadTab('upload')">
+            <i class="fas fa-cloud-upload-alt"></i> Upload New
+          </button>
+          <button type="button" class="upload-tab" id="tabExisting" onclick="switchUploadTab('existing')">
+            <i class="fas fa-folder-open"></i> Use Existing
+            <span class="rx-count-badge" id="rxCountBadge" style="display:none;">0</span>
+          </button>
+        </div>
+
+        <div id="uploadNewPanel">
+          <div class="upload-zone" id="uploadZone" onclick="document.getElementById('reportFiles').click()">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>Click to upload or drag &amp; drop</p>
+            <span>Photos (JPG, PNG) &bull; PDF files &bull; No file limit</span>
+            <div class="upload-actions">
+              <button type="button" class="upload-btn camera" onclick="event.stopPropagation(); openCamera()"><i class="fas fa-camera"></i> Camera</button>
+              <button type="button" class="upload-btn file" onclick="event.stopPropagation(); document.getElementById('reportFiles').click()"><i class="fas fa-file-pdf"></i> Files</button>
+            </div>
+          </div>
+          <input type="file" id="reportFiles" multiple accept="image/*,.pdf" style="display:none" onchange="handleFiles(this.files)">
+          <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="handleFiles(this.files)">
+          <div id="filePreview" class="file-preview"></div>
+        </div>
+
+        <div id="useExistingPanel" style="display:none;">
+          <div id="existingRxPickList" class="existing-rx-pick-list"></div>
+          <div id="selectedRxPreview" class="file-preview"></div>
+        </div>
+      </div>
+      <p id="step3Err" class="step-err"></p>
+      <div class="wizard-actions">
+        <button class="btn-back" onclick="goStep(2)"><i class="fas fa-arrow-left"></i> Back</button>
+        <button class="btn-next btn-find-doctor" id="step3NextBtn" onclick="handleStep3Next()">
+          <i class="fas fa-search-location"></i> Find Nearest Doctor
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 4 — Select Doctor / Clinic -->
+    <div class="wizard-step" id="step4" style="display:none;">
+      <div class="step4-header">
+        <div class="step-header">
+          <div class="step-icon" id="step4Icon"><i class="fas fa-user-md"></i></div>
+          <div>
+            <h3 id="step4Title">Select Doctor / Clinic</h3>
+            <p id="step4Sub">Choose a doctor or clinic for your appointment</p>
+          </div>
+        </div>
+        <!-- Doctor / Clinic toggle -->
+        <div class="s4-view-toggle" id="s4ViewToggle">
+          <button class="s4-toggle-btn active" id="toggleDoctor" onclick="switchStep4View('doctor')">
+            <i class="fas fa-user-md"></i> Select Doctor
+          </button>
+          <button class="s4-toggle-btn" id="toggleClinic" onclick="switchStep4View('clinic')">
+            <i class="fas fa-hospital"></i> Select Clinic
+          </button>
+        </div>
+        <!-- Emergency dispatch notice (home visit only) -->
+        <div id="hvDispatchBanner" class="hv-dispatch-banner" style="display:none;">
+          <i class="fas fa-location-dot"></i>
+          <span>Showing nearest available doctors based on your address</span>
+        </div>
+        <div id="doctorsSearchStatus" class="doctors-search-status">
+          <i class="fas fa-spinner fa-spin"></i> Finding doctors for you...
+        </div>
+      </div>
+      <div class="step4-scroll">
+        <div id="doctorsList" class="doctors-list"></div>
+        <div id="clinicList"  class="doctors-list" style="display:none;"></div>
+      </div>
+      <div class="step4-footer">
+        <p id="step4Err" class="step-err"></p>
+        <div class="wizard-actions">
+          <button class="btn-back" onclick="goStep(3)"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn-submit-final" id="step4ConfirmBtn" onclick="submitBooking()"><i class="fas fa-check-circle"></i> Confirm Booking</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- NURSE VISIT STEP -->
+    <div class="wizard-step" id="stepNurse" style="display:none;">
+
+      <!-- Sub-step A: Gender + Slot selection -->
+      <div id="nurseFormPanel">
+        <div class="step-header">
+          <div class="step-icon nurse-icon"><i class="fas fa-user-nurse"></i></div>
+          <div><h3>Nurse Home Visit</h3><p>Find an available nurse near you</p></div>
+        </div>
+
+        <div class="nurse-info-banner">
+          <i class="fas fa-syringe"></i>
+          <span>Ideal for injections, IV drips, wound dressing &amp; basic home care</span>
+        </div>
+
+        <div class="form-group">
+          <label>Health Problem / Service Needed *</label>
+          <textarea id="sn_healthProblem" rows="2" placeholder="e.g. Injection, IV drip, wound dressing, blood pressure check..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Nurse Gender Preference</label>
+          <div class="nurse-gender-opts">
+            <label class="ng-btn">
+              <input type="radio" name="nurseGender" value="Any" checked>
+              <span><i class="fas fa-user-nurse"></i> Any</span>
+            </label>
+            <label class="ng-btn">
+              <input type="radio" name="nurseGender" value="Female">
+              <span><i class="fas fa-venus"></i> Female</span>
+            </label>
+            <label class="ng-btn">
+              <input type="radio" name="nurseGender" value="Male">
+              <span><i class="fas fa-mars"></i> Male</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Preferred Date *</label>
+            <input type="date" id="sn_date" min="">
+          </div>
+          <div class="form-group">
+            <label>Preferred Time *</label>
+            <div class="time-spinner">
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeNurseTime('hour',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val" id="snHour">09</div>
+                <button type="button" class="ts-arrow" onclick="changeNurseTime('hour',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+              <div class="ts-sep">:</div>
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeNurseTime('min',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val" id="snMin">00</div>
+                <button type="button" class="ts-arrow" onclick="changeNurseTime('min',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+              <div class="ts-sep ts-sep-ampm"></div>
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeNurseTime('ampm',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val ts-ampm" id="snAmPm">AM</div>
+                <button type="button" class="ts-arrow" onclick="changeNurseTime('ampm',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p id="stepNurseErr" class="step-err"></p>
+        <div class="wizard-actions">
+          <button class="btn-back" onclick="backFromNurse()"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn-next" onclick="searchNurses()">
+            <i class="fas fa-search"></i> Search Nurse
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-step B: Nurse results -->
+      <div id="nurseResultsPanel" style="display:none;">
+        <div class="step-header">
+          <div class="step-icon nurse-icon"><i class="fas fa-user-nurse"></i></div>
+          <div><h3>Available Nurses</h3><p id="nurseResultsSub">Nurses available for your selected slot</p></div>
+        </div>
+        <div id="nurseList" class="nurses-list"></div>
+        <p id="stepNurseConfirmErr" class="step-err"></p>
+        <div class="wizard-actions">
+          <button class="btn-back" onclick="backToNurseForm()"><i class="fas fa-arrow-left"></i> Back</button>
+          <button class="btn-submit-final nurse-confirm-btn" onclick="confirmNurseBooking()">
+            <i class="fas fa-check-circle"></i> Confirm Nurse Booking
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="wizard-step" id="stepSuccess" style="display:none;">
+      <div class="success-screen">
+        <div class="success-icon"><i class="fas fa-check-circle"></i></div>
+        <h3 id="successTitle">Appointment Booked!</h3>
+        <p id="successMsg">Your appointment request has been sent to the doctor.<br>You'll be notified once it's confirmed.</p>
+        <button class="btn-next" onclick="closeAddModal()">Done</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══ DOCTOR INFO MODAL (Step 4 - Select Doctor) ══ -->
+<div id="doctorInfoModal" class="modal">
+  <div class="dinfo-modal-box">
+    <div class="dinfo-header">
+      <div class="dinfo-avatar" id="dinfoAvatar"><i class="fas fa-user-md"></i></div>
+      <div class="dinfo-title">
+        <h3 id="dinfoName">Doctor</h3>
+        <p id="dinfoDegree"></p>
+      </div>
+      <span class="dinfo-close" onclick="closeDoctorInfoModal()">&times;</span>
+    </div>
+    <div class="dinfo-body" id="dinfoBody"></div>
+  </div>
+</div>
+
+<!-- ══ DOCTOR DETAILS MODAL ══ -->
+<div id="doctorModal" class="modal">
+  <div class="doc-modal-box">
+    <div class="doc-modal-header">
+      <div class="doc-modal-avatar" id="docModalAvatar"><i class="fas fa-user-md"></i></div>
+      <div class="doc-modal-title">
+        <h3 id="docModalName">Doctor</h3>
+        <p id="docModalDegree"></p>
+      </div>
+      <span class="doc-modal-close" onclick="closeDoctorModal()">&times;</span>
+    </div>
+    <div class="doc-modal-body" id="docModalBody"></div>
+  </div>
+</div>
+
+<!-- ══ EDIT PROFILE MODAL ══ -->
+<!-- ══ ADD MEMBER MODAL (from sidebar) ══ -->
+<div id="addMemberModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-plus"></i> Add Family Member</h3>
+      <span class="close-modal" onclick="closeAddMemberModal()">&times;</span>
+    </div>
+    <form id="addMemberForm">
+      <div class="form-row">
+        <div class="form-group"><label>First Name *</label><input type="text" name="firstName" required></div>
+        <div class="form-group"><label>Last Name *</label><input type="text" name="lastName" required></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Age *</label><input type="number" name="age" min="1" max="120" required></div>
+        <div class="form-group">
+          <label>Gender *</label>
+          <select name="gender" required>
+            <option value="">Select</option>
+            <option>Male</option><option>Female</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Relation *</label>
+          <select name="relation" required>
+            <option value="">Select</option>
+            <option>Self</option><option>Parent</option><option>Child</option>
+            <option>Spouse</option><option>Sibling</option><option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Blood Group</label>
+          <select name="bloodGroup">
+            <option value="">Select</option>
+            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+            <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn-submit"><i class="fas fa-plus"></i> Add Member</button>
+      <p id="addMemberMsg" class="form-msg"></p>
+    </form>
+  </div>
+</div>
+
+<div id="editProfileModal" class="modal">
+  <div class="ep-modal-box">
+    <div class="ep-modal-header">
+      <div class="ep-modal-avatar"><i class="fas fa-user"></i></div>
+      <div>
+        <h3>Edit Profile</h3>
+        <p id="epModalMobile">—</p>
+      </div>
+      <span class="ep-modal-close" onclick="closeEditProfileModal()">&times;</span>
+    </div>
+
+    <form id="editProfileForm" class="ep-modal-form">
+      <div class="field-group">
+        <label><i class="fas fa-user"></i> Name</label>
+        <input type="text" id="ep_name" placeholder="Full name" required>
+      </div>
+      <div class="edit-field-row">
+        <div class="field-group">
+          <label><i class="fas fa-birthday-cake"></i> Age</label>
+          <input type="number" id="ep_age" min="1" max="120" placeholder="Age" required>
+        </div>
+        <div class="field-group">
+          <label><i class="fas fa-venus-mars"></i> Gender</label>
+          <div class="gender-options">
+            <label class="gender-btn"><input type="radio" name="ep_gender" value="Male"><span><i class="fas fa-mars"></i> Male</span></label>
+            <label class="gender-btn"><input type="radio" name="ep_gender" value="Female"><span><i class="fas fa-venus"></i> Female</span></label>
+            <label class="gender-btn"><input type="radio" name="ep_gender" value="Other"><span><i class="fas fa-genderless"></i> Other</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label><i class="fas fa-envelope"></i> Email <span class="ep-optional">(optional)</span></label>
+        <input type="email" id="ep_email" placeholder="your@email.com">
+      </div>
+      <div class="field-group">
+        <label><i class="fas fa-users"></i> Relation</label>
+        <select id="ep_relation">
+          <option value="Self">Self</option>
+          <option value="Parent">Parent</option>
+          <option value="Child">Child</option>
+          <option value="Spouse">Spouse</option>
+          <option value="Sibling">Sibling</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <p id="epErrMsg" class="ep-err"></p>
+      <p id="epSuccessMsg" class="ep-success"></p>
+      <button type="submit" class="btn-save-profile"><i class="fas fa-save"></i> Save Changes</button>
+    </form>
+  </div>
+</div>
+
+<script src="patient-dashboard.js"></script>
+</body>
+</html>

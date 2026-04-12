@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Profile - DoctorSetu</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="profile-styles.css">
+</head>
+<body>
+  <div class="container">
+    <div class="profile-box">
+      <!-- PAGE HEADER -->
+      <div class="page-header" id="pageHeader">
+        <button type="button" class="btn-header-back" onclick="goBack()">
+          <i class="fas fa-arrow-left"></i> <span id="backLabel">Back</span>
+        </button>
+        <h1 id="pageTitle">Complete Your Profile</h1>
+        <button type="button" class="btn-header-edit" id="editBtn" onclick="enterEditMode()" style="display:none;">
+          <i class="fas fa-edit"></i> Edit
+        </button>
+        <span id="editPlaceholder"></span>
+      </div>
+
+      <div class="profile-brand"><i class="fas fa-heartbeat"></i> DoctorSetu</div>
+
+      <form id="profileForm">
+
+        <!-- Photo -->
+        <div class="photo-section">
+          <div class="photo-wrap" onclick="document.getElementById('photoInput').click()">
+            <img id="photoPreviewImg" src="https://via.placeholder.com/100" alt="Photo">
+            <div class="photo-overlay"><i class="fas fa-camera"></i></div>
+          </div>
+          <div>
+            <p class="photo-hint">Profile Photo</p>
+            <div id="btn-upload-photo-wrap">
+              <button type="button" class="btn-upload-photo" onclick="document.getElementById('photoInput').click()">
+                <i class="fas fa-upload"></i> Upload Photo
+              </button>
+            </div>
+            <input type="file" id="photoInput" name="profilePhoto" accept="image/*" style="display:none" onchange="previewPhoto(this)">
+          </div>
+        </div>
+
+        <!-- Basic Info -->
+        <div class="section-title"><i class="fas fa-user"></i> Basic Information</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name *</label>
+            <input type="text" name="firstName" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name *</label>
+            <input type="text" name="lastName" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Age *</label>
+            <input type="number" name="age" min="18" max="100" required>
+          </div>
+          <div class="form-group">
+            <label>Gender *</label>
+            <select name="gender" required>
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Qualification -->
+        <div class="section-title"><i class="fas fa-graduation-cap"></i> Qualification</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Medical Degree *</label>
+            <input type="text" name="medicalDegree" placeholder="e.g. MBBS, MD" required>
+          </div>
+          <div class="form-group">
+            <label>Year of Completion *</label>
+            <input type="number" name="yearOfCompletion" placeholder="e.g. 2015" required>
+          </div>
+        </div>
+
+        <!-- Specializations -->
+        <div class="section-title"><i class="fas fa-stethoscope"></i> Specializations <span class="hint-tag">Max 5</span></div>
+        <div class="spec-input-row" id="specInputRow">
+          <input type="text" id="specInput" placeholder="e.g. Cardiologist, Pediatrician..." maxlength="50">
+          <button type="button" class="btn-add-spec" onclick="addSpec()"><i class="fas fa-plus"></i> Add</button>
+        </div>
+        <div id="specChips" class="spec-chips"></div>
+
+        <!-- Availability -->
+        <div class="section-title"><i class="fas fa-clock"></i> Daily Availability <span class="hint-tag">Max 8 hours</span></div>
+        <div class="avail-row">
+          <div class="form-group">
+            <label>Start Time *</label>
+            <div class="time-spinner" id="availStartSpinner">
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availStart','hour',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val" id="availStart_hour">09</div>
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availStart','hour',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+              <div class="ts-sep">:</div>
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availStart','min',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val" id="availStart_min">00</div>
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availStart','min',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+              <div class="ts-sep ts-sep-ampm"></div>
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availStart','ampm',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val ts-ampm" id="availStart_ampm">AM</div>
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availStart','ampm',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="avail-dash">—</div>
+          <div class="form-group">
+            <label>End Time *</label>
+            <div class="time-spinner" id="availEndSpinner">
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availEnd','hour',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val" id="availEnd_hour">05</div>
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availEnd','hour',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+              <div class="ts-sep">:</div>
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availEnd','min',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val" id="availEnd_min">00</div>
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availEnd','min',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+              <div class="ts-sep ts-sep-ampm"></div>
+              <div class="ts-col">
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availEnd','ampm',1)"><i class="fas fa-chevron-up"></i></button>
+                <div class="ts-val ts-ampm" id="availEnd_ampm">PM</div>
+                <button type="button" class="ts-arrow" onclick="changeSpinner('availEnd','ampm',-1)"><i class="fas fa-chevron-down"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p id="availErr" class="field-err"></p>
+
+        <!-- Appointment Types -->
+        <div class="section-title"><i class="fas fa-calendar-check"></i> Appointment Types</div>
+        <div class="apt-type-toggles">
+          <label class="apt-toggle" id="toggle_online">
+            <input type="checkbox" value="online" onchange="toggleAptType('online',this.checked)">
+            <span><i class="fas fa-video"></i> Online</span>
+          </label>
+          <label class="apt-toggle" id="toggle_home_visit">
+            <input type="checkbox" value="home_visit" onchange="toggleAptType('home_visit',this.checked)">
+            <span><i class="fas fa-house-medical"></i> Home Visit</span>
+          </label>
+          <label class="apt-toggle" id="toggle_clinic">
+            <input type="checkbox" value="clinic" onchange="toggleAptType('clinic',this.checked)">
+            <span><i class="fas fa-hospital"></i> Clinic</span>
+          </label>
+        </div>
+
+        <!-- Per-type availability (shown when type selected) -->
+        <div id="aptTypeAvailSection" style="display:none;">
+          <div class="section-title" style="margin-top:16px;"><i class="fas fa-clock"></i> Availability per Appointment Type</div>
+          <div id="aptTypeAvailFields"></div>
+        </div>
+
+        <!-- Clinic fields (shown only when clinic selected) -->
+        <div id="clinicFields" style="display:none;">
+          <div class="section-title"><i class="fas fa-hospital"></i> Clinic Details</div>
+          <div class="form-group">
+            <label>Clinic Name *</label>
+            <input type="text" name="clinicName" id="clinicName" placeholder="e.g. City Care Clinic">
+          </div>
+          <div class="form-group">
+            <label>Clinic Address *</label>
+            <textarea name="clinicAddress" id="clinicAddress" rows="2" placeholder="Full clinic address"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Clinic Photo <span class="optional-tag">Optional</span></label>
+            <div class="clinic-photo-wrap" onclick="document.getElementById('clinicPhotoInput').click()">
+              <img id="clinicPhotoPreview" src="" alt="" style="display:none;max-width:200px;border-radius:8px;margin-top:8px;">
+              <div class="clinic-upload-placeholder" id="clinicUploadPlaceholder">
+                <i class="fas fa-image"></i><span>Click to upload clinic photo</span>
+              </div>
+            </div>
+            <input type="file" id="clinicPhotoInput" name="clinicPhoto" accept="image/*" style="display:none" onchange="previewClinicPhoto(this)">
+          </div>
+        </div>
+
+        <!-- Addresses -->
+        <div class="section-title"><i class="fas fa-map-marker-alt"></i> Address</div>
+        <div class="form-group">
+          <label>Permanent Address *</label>
+          <textarea name="permanentAddress" rows="2" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Present Address</label>
+          <textarea name="presentAddress" rows="2"></textarea>
+        </div>
+
+        <input type="hidden" id="specializationsHiddenFinal" name="specializations">
+        <input type="hidden" id="appointmentTypesHidden" name="appointmentTypes">
+        <input type="hidden" id="aptTypeAvailabilityHidden" name="aptTypeAvailability">
+        <input type="hidden" id="availabilityStartHidden" name="availabilityStart">
+        <input type="hidden" id="availabilityEndHidden" name="availabilityEnd">
+
+        <p id="message" class="form-message"></p>
+        <button type="submit" class="btn-save" id="saveBtn"><i class="fas fa-save"></i> Save Profile</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="doctor-profile.js"></script>
+</body>
+</html>

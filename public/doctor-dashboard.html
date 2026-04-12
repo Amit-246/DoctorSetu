@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Dashboard - DoctorSetu</title>
+  <link rel="stylesheet" href="dashboard-styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fas fa-user-md"></i>
+        <h2>DoctorSetu</h2>
+      </div>
+      
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active" onclick="showSection('appointments')">
+          <i class="fas fa-calendar-check"></i>
+          <span>Appointments</span>
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('messages')">
+          <i class="fas fa-comment-medical"></i>
+          <span>Medical Chat</span>
+          <span id="msgBadge" class="msg-badge" style="display:none;">0</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item nav-logout" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="top-bar">
+        <h1>Welcome, Dr. <span id="doctorName">Loading...</span></h1>
+        <div class="top-right-bar">
+          <div class="notif-wrap">
+            <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
+              <i class="fas fa-bell"></i>
+              <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+            </button>
+            <div class="notif-panel" id="notifPanel">
+              <div class="notif-panel-header">
+                <span>Notifications</span>
+                <button class="notif-clear" onclick="clearNotifications()">Mark all read</button>
+              </div>
+              <div id="notifList" class="notif-list">
+                <p class="notif-empty"><i class="fas fa-bell-slash"></i><br>No notifications yet</p>
+              </div>
+            </div>
+          </div>
+          <div class="dr-profile-wrap">
+            <div class="dr-profile-btn" id="drProfileBtn" onclick="toggleDrProfileMenu()">
+              <img id="doctorPhoto" src="https://via.placeholder.com/40" alt="Profile">
+            </div>
+            <div class="dr-profile-dropdown" id="drProfileDropdown">
+              <div class="dr-pd-info" onclick="openProfileOverlay()" style="cursor:pointer;">
+                <p id="drPdName">Doctor</p>
+                <span id="drPdDegree"></span>
+                <small style="font-size:11px;color:#667eea;margin-top:2px;display:block;">View / Edit Profile</small>
+              </div>
+              <div class="pd-divider"></div>
+              <button class="dr-pd-item logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section id="appointmentsSection" class="content-section">
+        <div class="stats-cards">
+          <div class="stat-card pending" onclick="filterByStatus('pending')" style="cursor:pointer;">
+            <i class="fas fa-clock"></i>
+            <div>
+              <h3 id="pendingCount">0</h3>
+              <p>Pending</p>
+            </div>
+          </div>
+          <div class="stat-card confirmed" onclick="filterByStatus('confirmed')" style="cursor:pointer;">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <h3 id="confirmedCount">0</h3>
+              <p>Confirmed</p>
+            </div>
+          </div>
+          <div class="stat-card total" onclick="filterByStatus('all')" style="cursor:pointer;">
+            <i class="fas fa-calendar-alt"></i>
+            <div>
+              <h3 id="totalCount">0</h3>
+              <p>Total</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="appointments-container">
+          <h2>Appointment Requests</h2>
+          <div id="appointmentsList" class="appointments-list">
+            <div class="loading">Loading appointments...</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="profileSection" class="content-section" style="display:none;">
+        <div class="profile-container">
+          <h2>Edit Profile</h2>
+          <form id="editDrProfileForm" enctype="multipart/form-data">
+
+            <div class="ep-photo-row">
+              <div class="ep-photo-preview" id="epPhotoPreview">
+                <img id="epPhotoImg" src="https://via.placeholder.com/100" alt="Photo">
+                <div class="ep-photo-overlay" onclick="document.getElementById('epPhotoInput').click()">
+                  <i class="fas fa-camera"></i>
+                </div>
+              </div>
+              <div>
+                <p class="ep-photo-label">Profile Photo</p>
+                <input type="file" id="epPhotoInput" accept="image/*" style="display:none" onchange="previewDrPhoto(this)">
+                <button type="button" class="ep-upload-btn" onclick="document.getElementById('epPhotoInput').click()">
+                  <i class="fas fa-upload"></i> Upload Photo
+                </button>
+              </div>
+            </div>
+
+            <div class="ep-form-grid">
+              <div class="form-group"><label>First Name *</label><input type="text" id="ep_firstName" required></div>
+              <div class="form-group"><label>Last Name *</label><input type="text" id="ep_lastName" required></div>
+              <div class="form-group"><label>Age *</label><input type="number" id="ep_age" min="18" max="100" required></div>
+              <div class="form-group">
+                <label>Gender *</label>
+                <select id="ep_gender" required>
+                  <option value="">Select</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="form-group"><label>Medical Degree *</label><input type="text" id="ep_degree" placeholder="e.g. MBBS, MD" required></div>
+              <div class="form-group"><label>Year of Completion *</label><input type="number" id="ep_year" required></div>
+            </div>
+
+            <div class="ep-section-label"><i class="fas fa-stethoscope"></i> Specializations <span style="font-size:11px;color:#aaa;font-weight:400;">(Max 5)</span></div>
+            <div class="ep-spec-row">
+              <input type="text" id="ep_specInput" placeholder="Add specialization...">
+              <button type="button" class="ep-upload-btn" onclick="epAddSpec()"><i class="fas fa-plus"></i></button>
+            </div>
+            <div id="ep_specChips" class="ep-spec-chips"></div>
+
+            <div class="ep-section-label"><i class="fas fa-clock"></i> Daily Availability <span style="font-size:11px;color:#aaa;font-weight:400;">(Max 8 hrs)</span></div>
+            <div class="ep-avail-row">
+              <div class="form-group"><label>Start</label><div class="time-spinner ep-spinner">
+                <div class="ts-col"><button type="button" class="ts-arrow" onclick="epChangeTime('start','hour',1)"><i class="fas fa-chevron-up"></i></button><div class="ts-val" id="ep_startHour">09</div><button type="button" class="ts-arrow" onclick="epChangeTime('start','hour',-1)"><i class="fas fa-chevron-down"></i></button></div>
+                <div class="ts-sep">:</div>
+                <div class="ts-col"><button type="button" class="ts-arrow" onclick="epChangeTime('start','min',1)"><i class="fas fa-chevron-up"></i></button><div class="ts-val" id="ep_startMin">00</div><button type="button" class="ts-arrow" onclick="epChangeTime('start','min',-1)"><i class="fas fa-chevron-down"></i></button></div>
+                <div class="ts-sep ts-sep-ampm"></div>
+                <div class="ts-col"><button type="button" class="ts-arrow" onclick="epChangeTime('start','ampm',1)"><i class="fas fa-chevron-up"></i></button><div class="ts-val ts-ampm" id="ep_startAmpm">AM</div><button type="button" class="ts-arrow" onclick="epChangeTime('start','ampm',-1)"><i class="fas fa-chevron-down"></i></button></div>
+              </div></div>
+              <span class="ep-dash">—</span>
+              <div class="form-group"><label>End</label><div class="time-spinner ep-spinner">
+                <div class="ts-col"><button type="button" class="ts-arrow" onclick="epChangeTime('end','hour',1)"><i class="fas fa-chevron-up"></i></button><div class="ts-val" id="ep_endHour">05</div><button type="button" class="ts-arrow" onclick="epChangeTime('end','hour',-1)"><i class="fas fa-chevron-down"></i></button></div>
+                <div class="ts-sep">:</div>
+                <div class="ts-col"><button type="button" class="ts-arrow" onclick="epChangeTime('end','min',1)"><i class="fas fa-chevron-up"></i></button><div class="ts-val" id="ep_endMin">00</div><button type="button" class="ts-arrow" onclick="epChangeTime('end','min',-1)"><i class="fas fa-chevron-down"></i></button></div>
+                <div class="ts-sep ts-sep-ampm"></div>
+                <div class="ts-col"><button type="button" class="ts-arrow" onclick="epChangeTime('end','ampm',1)"><i class="fas fa-chevron-up"></i></button><div class="ts-val ts-ampm" id="ep_endAmpm">PM</div><button type="button" class="ts-arrow" onclick="epChangeTime('end','ampm',-1)"><i class="fas fa-chevron-down"></i></button></div>
+              </div></div>
+            </div>
+
+            <div class="ep-section-label"><i class="fas fa-calendar-check"></i> Appointment Types</div>
+            <div class="ep-apt-types">
+              <label class="ep-apt-toggle" id="ep_toggle_online"><input type="checkbox" value="online" onchange="epToggleType('online',this.checked)"><span><i class="fas fa-video"></i> Online</span></label>
+              <label class="ep-apt-toggle" id="ep_toggle_home_visit"><input type="checkbox" value="home_visit" onchange="epToggleType('home_visit',this.checked)"><span><i class="fas fa-house-medical"></i> Home Visit</span></label>
+              <label class="ep-apt-toggle" id="ep_toggle_clinic"><input type="checkbox" value="clinic" onchange="epToggleType('clinic',this.checked)"><span><i class="fas fa-hospital"></i> Clinic</span></label>
+            </div>
+
+            <div class="form-group" id="ep_clinicAddrGroup" style="display:none;">
+              <label>Clinic Address *</label>
+              <textarea id="ep_clinicAddress" rows="2"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Permanent Address</label>
+              <textarea id="ep_permAddr" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+              <label>Present Address / Clinic</label>
+              <textarea id="ep_presAddr" rows="2"></textarea>
+            </div>
+
+            <p id="epDrErr" style="color:#e74c3c;font-size:13px;min-height:18px;"></p>
+            <p id="epDrSuccess" style="color:#27ae60;font-size:13px;min-height:18px;"></p>
+            <button type="submit" class="btn-save-dr"><i class="fas fa-save"></i> Save Changes</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="messagesSection" class="content-section" style="display:none;">
+        <div class="messages-container">
+          <h2><i class="fas fa-comment-medical"></i> Medical Chat</h2>
+          <p class="msg-subtitle">Select a confirmed appointment to send medical advice, instructions, or medicine details.</p>
+
+          <div class="msg-compose">
+            <div class="form-group">
+              <label>Select Patient (Confirmed Appointments)</label>
+              <select id="msgAppointmentSelect">
+                <option value="">-- Select Patient --</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Message Type</label>
+              <div class="msg-type-tabs">
+                <button class="msg-type active" data-type="medical_advice" onclick="selectMsgType(this)">
+                  <i class="fas fa-stethoscope"></i> Medical Advice
+                </button>
+                <button class="msg-type" data-type="instructions" onclick="selectMsgType(this)">
+                  <i class="fas fa-list-check"></i> Instructions
+                </button>
+                <button class="msg-type" data-type="medicine" onclick="selectMsgType(this)">
+                  <i class="fas fa-pills"></i> Medicine
+                </button>
+                <button class="msg-type" data-type="general" onclick="selectMsgType(this)">
+                  <i class="fas fa-comment"></i> General
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Message</label>
+              <textarea id="msgText" rows="5" placeholder="Write your message here..."></textarea>
+            </div>
+
+            <button class="btn-send-msg" onclick="sendMessage()">
+              <i class="fas fa-paper-plane"></i> Send Message
+            </button>
+            <p id="msgStatus"></p>
+          </div>
+
+          <div class="msg-history">
+            <h3>Sent Messages</h3>
+            <div id="msgHistoryList"><p class="no-data">Select a patient to view message history.</p></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="patientModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Patient Details</h2>
+      <div id="patientDetails" class="patient-details"></div>
+    </div>
+  </div>
+
+  <!-- ══ PROFILE OVERLAY ══ -->
+  <div id="profileOverlay" onclick="handleOverlayClick(event)" style="display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,0.55);">
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;">
+      <div style="position:relative;width:100%;max-width:860px;height:90vh;border-radius:18px;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,0.35);">
+        <button onclick="closeProfileOverlay()" style="position:absolute;top:14px;right:16px;z-index:10;background:rgba(0,0,0,0.18);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;color:white;font-size:18px;display:flex;align-items:center;justify-content:center;">&times;</button>
+        <iframe id="profileFrame" src="" style="width:100%;height:100%;border:none;border-radius:18px;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script src="doctor-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f2ff;
+  min-height: 100vh;
+}
+
+.page {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ── LEFT PANEL ─────────────────────────────── */
+.left-panel {
+  width: 45%;
+  background: linear-gradient(145deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 50px;
+  color: white;
+}
+
+.brand i {
+  font-size: 52px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.brand h1 {
+  font-size: 38px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.brand p {
+  font-size: 16px;
+  opacity: 0.85;
+  margin-bottom: 50px;
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 15px;
+  opacity: 0.92;
+}
+
+.feature-item i {
+  width: 42px;
+  height: 42px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ── RIGHT PANEL ─────────────────────────────── */
+.right-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 30px;
+}
+
+.login-card {
+  background: white;
+  border-radius: 20px;
+  padding: 45px 40px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 10px 50px rgba(102,126,234,0.15);
+}
+
+h2 {
+  font-size: 26px;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.sub {
+  color: #888;
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+/* ── ROLE CARDS ─────────────────────────────── */
+.role-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.role-card {
+  border: 2px solid #e8e8e8;
+  border-radius: 16px;
+  padding: 28px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+
+.role-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 6px 25px rgba(102,126,234,0.2);
+  transform: translateY(-3px);
+}
+
+.role-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+  font-size: 26px;
+}
+
+.patient-icon {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  color: white;
+}
+
+.doctor-icon {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+}
+
+.nurse-icon {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  color: white;
+}
+
+.role-card h3 {
+  font-size: 17px;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.role-card p {
+  font-size: 12px;
+  color: #999;
+  line-height: 1.5;
+}
+
+/* ── ROLE LABEL ─────────────────────────────── */
+.role-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+
+.role-label.patient {
+  background: #e8fdf4;
+  color: #1a9e5c;
+}
+
+.role-label.doctor {
+  background: #eeecff;
+  color: #667eea;
+}
+
+/* ── INPUT ─────────────────────────────── */
+.input-group {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #aaa;
+  font-size: 16px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px 14px 14px 42px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  transition: border 0.3s;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+/* ── OTP BOXES ─────────────────────────────── */
+.otp-boxes {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.otp-input {
+  width: 52px;
+  height: 58px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  transition: border 0.3s;
+  color: #333;
+}
+
+.otp-input:focus {
+  outline: none;
+  border-color: #667eea;
+  background: #f5f6ff;
+}
+
+/* ── BUTTONS ─────────────────────────────── */
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.3s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+}
+
+.back-btn:hover {
+  text-decoration: underline;
+  background: none;
+}
+
+.resend-text {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 13px;
+  color: #888;
+}
+
+.resend-text span {
+  color: #667eea;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.resend-text span:hover {
+  text-decoration: underline;
+}
+
+.message {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 20px;
+}
+
+/* ── RESPONSIVE ─────────────────────────────── */
+@media (max-width: 768px) {
+  .page {
+    flex-direction: column;
+  }
+
+  .left-panel {
+    width: 100%;
+    padding: 40px 30px;
+  }
+
+  .features {
+    display: none;
+  }
+
+  .brand {
+    text-align: center;
+  }
+
+  .brand i {
+    font-size: 36px;
+  }
+
+  .brand h1 {
+    font-size: 28px;
+  }
+
+  .brand p {
+    margin-bottom: 10px;
+  }
+
+  .login-card {
+    padding: 30px 24px;
+  }
+}

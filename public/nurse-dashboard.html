@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nurse Dashboard - DoctorSetu</title>
+  <link rel="stylesheet" href="dashboard-styles.css">
+  <link rel="stylesheet" href="nurse-dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="nurse-theme">
+  <div class="dashboard">
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fas fa-user-nurse"></i>
+        <h2>DoctorSetu</h2>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active" onclick="showSection('appointments')">
+          <i class="fas fa-calendar-check"></i>
+          <span>Appointments</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item nav-logout" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="top-bar">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <h1>Welcome, <span id="nurseName">Loading...</span></h1>
+          <span class="nurse-role-badge"><i class="fas fa-user-nurse"></i> Nurse</span>
+        </div>
+        <div class="top-right-bar">
+          <!-- Notification Bell -->
+          <div class="notif-wrap">
+            <button class="notif-btn" id="notifBtn" onclick="toggleNotifPanel()">
+              <i class="fas fa-bell"></i>
+              <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+            </button>
+            <div class="notif-panel" id="notifPanel">
+              <div class="notif-panel-header">
+                <span>Notifications</span>
+                <button class="notif-clear" onclick="clearNotifications()">Mark all read</button>
+              </div>
+              <div id="notifList" class="notif-list">
+                <p class="notif-empty"><i class="fas fa-bell-slash"></i><br>No notifications yet</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Avatar -->
+          <div class="dr-profile-wrap">
+            <div class="dr-profile-btn" id="nurseProfileBtn" onclick="toggleProfileMenu()">
+              <img id="nursePhoto" src="https://via.placeholder.com/40" alt="Profile">
+            </div>
+            <div class="dr-profile-dropdown" id="nurseProfileDropdown">
+              <div class="dr-pd-info" onclick="openProfileOverlay()" style="cursor:pointer;">
+                <p id="nursePdName">Nurse</p>
+                <span id="nursePdQual"></span>
+                <small style="font-size:11px;color:#0f9b8e;margin-top:2px;display:block;">View / Edit Profile</small>
+              </div>
+              <div class="pd-divider"></div>
+              <button class="dr-pd-item logout" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <section id="appointmentsSection" class="content-section">
+        <div class="stats-cards">
+          <div class="stat-card pending" onclick="filterByStatus('pending')" style="cursor:pointer;">
+            <i class="fas fa-clock"></i>
+            <div>
+              <h3 id="pendingCount">0</h3>
+              <p>Pending</p>
+            </div>
+          </div>
+          <div class="stat-card confirmed" onclick="filterByStatus('confirmed')" style="cursor:pointer;">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <h3 id="confirmedCount">0</h3>
+              <p>Confirmed</p>
+            </div>
+          </div>
+          <div class="stat-card total" onclick="filterByStatus('all')" style="cursor:pointer;">
+            <i class="fas fa-calendar-alt"></i>
+            <div>
+              <h3 id="totalCount">0</h3>
+              <p>Total</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="appointments-container">
+          <h2>Appointment Requests</h2>
+          <div id="appointmentsList" class="appointments-list">
+            <div class="loading">Loading appointments...</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Patient Details Modal -->
+  <div id="patientModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Patient Details</h2>
+      <div id="patientDetails" class="patient-details"></div>
+    </div>
+  </div>
+
+  <!-- Profile Overlay (iframe) -->
+  <div id="profileOverlay" onclick="handleOverlayClick(event)" style="display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,0.55);">
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:16px;">
+      <div style="position:relative;width:100%;max-width:860px;height:90vh;border-radius:18px;overflow:hidden;box-shadow:0 16px 60px rgba(0,0,0,0.35);">
+        <button onclick="closeProfileOverlay()" style="position:absolute;top:14px;right:16px;z-index:10;background:rgba(0,0,0,0.18);border:none;border-radius:50%;width:34px;height:34px;cursor:pointer;color:white;font-size:18px;display:flex;align-items:center;justify-content:center;">&times;</button>
+        <iframe id="profileFrame" src="" style="width:100%;height:100%;border:none;border-radius:18px;"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script src="nurse-dashboard.js"></script>
+</body>
+</html>

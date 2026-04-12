@@ -1,0 +1,91 @@
+/* ── NURSE DASHBOARD — TEAL/GREEN THEME ─────────────────── */
+
+/* Sidebar */
+.nurse-theme .sidebar {
+  background: linear-gradient(180deg, #0f9b8e 0%, #0a7c72 50%, #065f57 100%);
+}
+
+/* Logo accent */
+.nurse-theme .logo i { color: #7fffd4; }
+
+/* Nav active / hover */
+.nurse-theme .nav-item:hover,
+.nurse-theme .nav-item.active {
+  background: rgba(255,255,255,0.18);
+}
+
+/* Top bar title accent */
+.nurse-theme .top-bar h1 span { color: #0f9b8e; }
+
+/* Profile avatar border */
+.nurse-theme .dr-profile-btn { border-color: #0f9b8e; }
+.nurse-theme .dr-profile-btn:hover { box-shadow: 0 0 0 3px rgba(15,155,142,0.25); }
+
+/* Notification bell */
+.nurse-theme .notif-btn { background: #e6faf8; color: #0f9b8e; }
+.nurse-theme .notif-btn:hover { background: #c8f4f0; }
+.nurse-theme .notif-badge { background: #e74c3c; }
+
+/* Stat cards */
+.nurse-theme .stat-card.pending i   { color: #f39c12; }
+.nurse-theme .stat-card.confirmed i { color: #0f9b8e; }
+.nurse-theme .stat-card.total i     { color: #0a7c72; }
+
+.nurse-theme .stat-card.confirmed.stat-active { border-color: #0f9b8e; background: #e6faf8; }
+.nurse-theme .stat-card.total.stat-active     { border-color: #0a7c72; background: #e0f5f3; }
+
+/* Appointment card confirmed accent */
+.nurse-theme .appointment-card.confirmed { border-left-color: #0f9b8e; }
+
+/* Status badge confirmed */
+.nurse-theme .status-badge.confirmed {
+  background: #d0f5f0;
+  color: #0a7c72;
+}
+
+/* Patient info icon */
+.nurse-theme .patient-info i { color: #0f9b8e; }
+
+/* Detail item icon */
+.nurse-theme .detail-item i { color: #0f9b8e; }
+
+/* Confirm button */
+.nurse-theme .btn-confirm {
+  background: linear-gradient(135deg, #0f9b8e, #0a7c72);
+}
+
+/* Profile dropdown accent */
+.nurse-theme .dr-pd-info span { color: #0f9b8e; }
+.nurse-theme .dr-pd-item i    { color: #0f9b8e; }
+.nurse-theme .dr-pd-item:hover { background: #e6faf8; color: #0f9b8e; }
+
+/* Notif panel item hover */
+.nurse-theme .notif-item:hover  { background: #e6faf8; }
+.nurse-theme .notif-item.unread { background: #f0fdfb; }
+.nurse-theme .notif-item:hover .notif-arrow { color: #0f9b8e; }
+
+/* Appointments container heading */
+.nurse-theme .appointments-container h2 { color: #0a7c72; }
+
+/* Top bar box shadow tint */
+.nurse-theme .top-bar {
+  border-bottom: 2px solid #e6faf8;
+}
+
+/* Scrollbar tint (webkit) */
+.nurse-theme .main-content::-webkit-scrollbar-thumb { background: #0f9b8e44; }
+
+/* ── NURSE HEADER BADGE ──────────────────────────────────── */
+.nurse-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #e6faf8, #c8f4f0);
+  color: #0a7c72;
+  border: 1.5px solid #a0e8e2;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
